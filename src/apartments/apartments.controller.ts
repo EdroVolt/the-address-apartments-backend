@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -15,6 +16,10 @@ import { FileUploadService } from '../common/file-upload/file-upload.service';
 import { ALLOWED_FILE_TYPES, MAX_FILE_SIZE } from '../common/constants';
 import { ApartmentsService } from './apartments.service';
 import { Apartment } from './entities/apartment.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRole } from '../users/entities/user.entity';
 
 @Controller('apartments')
 export class ApartmentsController {
@@ -24,6 +29,8 @@ export class ApartmentsController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -69,6 +76,8 @@ export class ApartmentsController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -105,6 +114,8 @@ export class ApartmentsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   remove(@Param('id') id: string) {
     return this.apartmentsService.remove(+id);
   }
