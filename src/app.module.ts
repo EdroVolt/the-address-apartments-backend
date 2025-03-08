@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApartmentsModule } from './apartments/apartments.module';
 import { FileUploadModule } from './common/file-upload/file-upload.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { FileUploadModule } from './common/file-upload/file-upload.module';
     }),
     ApartmentsModule,
     FileUploadModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
