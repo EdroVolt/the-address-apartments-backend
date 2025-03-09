@@ -8,11 +8,14 @@ RUN npm install --only=production
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine AS runner
+FROM node:18-alpine AS runner
 
-WORKDIR /usr/share/nginx/html
+WORKDIR /app
 
-COPY --from=builder /app/dist ./
+COPY --from=builder /app/package.json /app/package-lock.json ./
+RUN npm install --only=production
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 8080
+CMD ["node", "dist/main.js"]
